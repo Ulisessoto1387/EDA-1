@@ -1,2 +1,2 @@
 # Christian Ulises Soto Fuentes 
-# Grupo:3   Estructura de Datos y Algoritmos 1
+# Estructura de Datos y Algoritmos 1         Grupo:3
