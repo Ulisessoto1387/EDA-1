@@ -202,3 +202,108 @@ int main() {
 
     return 0;
 }
+
+
+
+//Tercer codigo
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definición de la estructura del nodo 
+typedef struct NodoCircular {
+    int dato;
+    struct NodoCircular *siguiente; // Puntero al siguiente nodo
+} NodoCircular;
+
+// En una lista circular, es conveniente mantener un puntero al ÚLTIMO nodo
+// porque así podemos acceder al PRIMERO (el siguiente del último) en O(1).
+NodoCircular *ultimo = NULL;
+
+// Función para crear un nuevo nodo
+NodoCircular *crear_nodo_circular(int dato) {
+    NodoCircular *nuevo = (NodoCircular *)malloc(sizeof(NodoCircular));
+    
+    if (nuevo == NULL) {
+        printf("Error: No se pudo reservar memoria.\n");
+        exit(1);
+    }
+    
+    nuevo->dato = dato;
+    nuevo->siguiente = nuevo; // Inicialmente se apunta a sí mismo
+    return nuevo;
+}
+
+// Función para insertar un nodo en una lista circular vacía o al final
+void insertar_final_circular(int dato) {
+    NodoCircular *nuevo = crear_nodo_circular(dato);
+    
+    if (ultimo == NULL) {
+        // La lista está vacía
+        ultimo = nuevo;
+    } else {
+        // 1. El nuevo nodo apunta al que actualmente es el primero (el 'siguiente' del 'ultimo')
+        nuevo->siguiente = ultimo->siguiente; 
+        
+        // 2. El nodo que era el último ahora apunta al nuevo nodo
+        ultimo->siguiente = nuevo;
+        
+        // 3. El nuevo nodo es ahora el 'ultimo'
+        ultimo = nuevo;
+    }
+}
+
+// Función para mostrar la lista circular
+void mostrar_lista_circular() {
+    if (ultimo == NULL) {
+        printf("\nLista Circular: Vacía\n");
+        return;
+    }
+    
+    // Empezamos por el primer nodo (el siguiente de 'ultimo')
+    NodoCircular *actual = ultimo->siguiente; 
+    printf("\nLista Circular: ");
+
+    // Recorremos hasta que volvemos al inicio
+    do {
+        printf("%d -> ", actual->dato);
+        actual = actual->siguiente;
+    } while (actual != ultimo->siguiente);
+    
+    // Imprimir para indicar que se cierra el ciclo
+    printf("(Vuelve a %d)\n", ultimo->siguiente->dato);
+}
+
+// Función para liberar toda la memoria de la lista circular
+void liberar_lista_circular() {
+    if (ultimo == NULL) return;
+
+    NodoCircular *cabeza = ultimo->siguiente;
+    NodoCircular *actual = cabeza;
+    NodoCircular *temp;
+
+    // Romper el ciclo primero
+    ultimo->siguiente = NULL; 
+
+    while (actual != NULL) {
+        temp = actual->siguiente; 
+        free(actual);          
+        actual = temp;         
+    }
+    ultimo = NULL; // Asegurarse de que la lista esté vacía
+}
+
+
+int main() {
+    printf("\n--- Lista Enlazada Circular ---\n");
+    insertar_final_circular(10);
+    insertar_final_circular(20);
+    insertar_final_circular(30);
+    mostrar_lista_circular(); // Mostrara: 10 -> 20 -> 30 -> (Vuelve a 10)
+
+    // Liberar la memoria al final
+    liberar_lista_circular();
+    printf("Memoria de la lista circular liberada.\n");
+
+    return 0;
+}
+
